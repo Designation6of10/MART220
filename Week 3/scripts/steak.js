@@ -5,12 +5,23 @@ class Steak{
         
     }
     
-    display(translateX = null,translateY = null){
+    display(translateX = null,translateY = null,translateS = null){
         this.translateX = translateX;
         this.translateY = translateY;
+        this.translateS = translateS;
+        this.steakOffsetX = 360;
+        this.steakOffsetY = 300;
 
+        //Changes offset according to scale if specified.
+        if(typeof this.translateS === "number"){
+            this.steakOffsetX *= translateS;
+            this.steakOffsetY *= translateS;
+        }else{
+            this.steakOffsetX = 360;
+            this.steakOffsetY = 300;
+        }
         //Sets an offset based on the rough center of the object
-        this.offset = createVector(((this.translateX*1)-360),((this.translateY*1)-300));
+        this.offset = createVector(((this.translateX*1)-this.steakOffsetX),((this.translateY*1)-this.steakOffsetY));
         //Sets the origin to the rough center of the object
         this.origin = createVector(this.translateX,this.translateY);
 
@@ -20,9 +31,14 @@ class Steak{
         if(typeof translateX === "number" && typeof translateY === "number"){
             translate(this.offset);
         }else if((translateX !== null && translateY === null) || (this.translateX === null && translateY !== null) || 
-        (this.translateX !== null && typeof this.translateX !== "number") || (translateY !== null && typeof translateY !== "number")){
-            console.error("Invalid translate parameters. Expected two numerical arguments but instead recieved " + translateX + " and " + translateY + ".");
+        (this.translateX !== null && typeof this.translateX !== "number") || (this.translateY !== null && typeof this.translateY !== "number")){
+            console.error("Invalid translate parameters. Expected two or more numerical arguments but instead recieved " + translateX + " and " + translateY + ".");
             noLoop();
+        }
+
+        //Check to see if translateS is specified
+        if(typeof this.translateS === "number"){
+            scale(this.translateS);
         }
 
         strokeWeight(0);

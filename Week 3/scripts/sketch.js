@@ -1,9 +1,25 @@
 var party = false;
 var backgroundColor = [255, 255, 255];
 var steaks = [];
+var imageStrings = [];
+var images = [];
+var loadedImages = [];
+var objectDisplay = [];
+var imageMap = {};
+var funFont;
+
+function preload() {
+  funFont = loadFont("./fonts/Banana.ttf");
+  imageStrings = loadStrings('./images/index.txt', loadImages);
+  //console.log(imageStrings);
+
+}
 
 function setup() {
   createCanvas(windowWidth - 20, windowHeight - 20);
+  imageMode(CENTER);
+  //console.log(images);
+  //displayImages();
 }
 
 function draw() {
@@ -11,7 +27,9 @@ function draw() {
   if (party == true) {
     drawConfetti(20);
   }
-  drawSteak(1,0,0);
+  //Temporary steak class call. Needs tweaking.
+  displayImages();
+  drawSteak(1, null, null, 1); //count, x pos, y pos, scale. Defaults to center of the canvas if null values passed.
   drawSignature();
   drawTitle();
   drawButton();
@@ -23,6 +41,7 @@ function drawSignature() {
 
   push();
   noStroke();
+  textFont(funFont);
   if (party == true) {
     fill(random(255), random(255), random(255));
   } else {
@@ -33,13 +52,38 @@ function drawSignature() {
   pop();
 }
 
-function drawSteak(count,tranX,tranY){
-  for(i=0;i<count;i++){
+function loadImages() {
+  for (i=0;i<imageStrings.length;i++) {
+    let imgPath = './images/' + imageStrings[i];
+    let img = loadImage(imgPath, function() {
+      // push image into images array after loading
+      images.push(new ImageClass(img, createVector((windowWidth - 20) / 2, (windowHeight - 20) / 2)));
+      
+      //extract the image name from the filename and save it to imageMap as a key
+      /*let imgFilename = imageStrings[i].split('.').slice(0, -1).join('.');
+      imageMap[imgFilename] = images[images.length - 1];*/
+    });
+  }
+}
+
+function displayImages() {
+  for (i=0;i<images.length;i++) {
+    objectDisplay.push(images[i].display());
+  }
+  //console.log(objectDisplay);
+}
+
+function drawSteak(count, tranX, tranY, tranS) {
+  for (i = 0; i < count; i++) {
     steaks[i] = new Steak();
+    if (typeof tranX !== "number" || typeof tranY !== "number") {
+      tranX = width / 2;
+      tranY = height / 2;
+    }
   }
 
-  for(i=0;i<steaks.length;i++){
-    steaks[i].display(tranX,tranY);
+  for (i = 0; i < steaks.length; i++) {
+    steaks[i].display(tranX, tranY, tranS);
   }
 }
 
