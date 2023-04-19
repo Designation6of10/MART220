@@ -10,9 +10,7 @@ var funFont;
 
 function preload() {
   funFont = loadFont("./fonts/Banana.ttf");
-  imageStrings = loadStrings('./images/index.txt', loadImages);
-  //console.log(imageStrings);
-
+  imageStrings = loadStrings('./images/index.txt', function() {loadImages(function() {labelImages(imageStrings,images)})});
 }
 
 function setup() {
@@ -58,12 +56,19 @@ function loadImages() {
     let img = loadImage(imgPath, function() {
       // push image into images array after loading
       images.push(new ImageClass(img, createVector((windowWidth - 20) / 2, (windowHeight - 20) / 2)));
-      
-      //extract the image name from the filename and save it to imageMap as a key
-      /*let imgFilename = imageStrings[i].split('.').slice(0, -1).join('.');
-      imageMap[imgFilename] = images[images.length - 1];*/
+      //console.log(images);
     });
   }
+  return images;
+}
+
+function labelImages(imageStrings,images) {
+  for (i=0;i<images.length;i++) {
+    //extract the image name from the filename and save it to imageMap as a key
+    let imgFilename = imageStrings[i].split('.').slice(0, -1).join('.');
+    imageMap[imgFilename] = images[i];
+  }
+  console.log(imageMap);
 }
 
 function displayImages() {
